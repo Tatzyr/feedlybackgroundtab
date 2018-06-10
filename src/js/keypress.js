@@ -15,7 +15,7 @@
 		'a.visitWebsiteButton',					// the floating one for card view
 		'.entry.selected a.title'				// title bar for active entry in React-based collapsed list view
 	];
-	
+
 	/**
 	 * Main feedlybackgroundtab constructor
 	 */
@@ -29,13 +29,33 @@
 		var _triggerKeyCode = 59;
 
 		/**
+		 * The default mod key code which is [
+		 * @type {number}
+		 * @private
+		 */
+		var _triggerModKeyCode = 91;
+
+		/**
+		 * The default mod prefix
+		 * @type {string}
+		 * @private
+		 */
+		var _modPrefix = 'https://web.archive.org/web/*/';
+
+		/**
 		 * Used to create the default key code from local storage
 		 * Also modifies the help popup
 		 */
 		this.init = function() {
-			chrome.storage.sync.get('shortcutKey', function(settings) {
+			chrome.storage.sync.get(['shortcutKey', 'modShortcutKey', 'modPrefix'], function(settings) {
 				if (settings.shortcutKey) {
 					_triggerKeyCode = settings.shortcutKey.charCodeAt(0);
+				}
+				if (settings.modShortcutKey) {
+					_triggerModKeyCode = settings.modShortcutKey.charCodeAt(0);
+				}
+				if (settings.modPrefix) {
+					_modPrefix = settings.modPrefix;
 				}
 			});
 		};
@@ -58,6 +78,23 @@
 					}
 					if (url) {
 						chrome.extension.sendMessage({url: url.href});
+					}
+					else {
+						console.log("Could not find any selectors from: " + selectors.join());
+					}
+				}
+
+				if ((!e.altKey && !e.ctrlKey) && e.keyCode == _triggerModKeyCode) {
+					var url;
+					for (var x in selectors) {
+						url = document.querySelector(selectors[x]);
+						if (url) {
+							break;
+						}
+					}
+					if (url) {
+						var modifiedUrl = _modPrefix + url.href;
+						chrome.extension.sendMessage({url: modifiedUrl});
 					}
 					else {
 						console.log("Could not find any selectors from: " + selectors.join());

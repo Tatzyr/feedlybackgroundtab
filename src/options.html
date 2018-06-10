@@ -23,7 +23,7 @@
             color: #000;
         }
         #fbt_container {
-            width: 370px;
+            width: 550px;
             margin: auto;
             border: 1px solid #aaa;
             padding: 20px;
@@ -32,12 +32,17 @@
         #fbt_container h1 {
             margin-top: 0px;
         }
-        #fbt_shortcutkey {
+        #fbt_shortcutkey,#fbt_mod_shortcutkey {
             width: 20px;
             padding: 3px 5px;
             font-weight: bold;
             font-size: 20px;
             text-align: center;
+        }
+        #fbt_mod_prefix {
+            width: 200px;
+            padding: 3px 5px;
+            font-weight: bold;
         }
         #fbt_status {
             font-weight: bold;
@@ -64,8 +69,16 @@
         <h1>FeedlyBackgroundTab Chrome Extension Options</h1>
         <p>The following settings are used to modify the behavior of this extension.  Please click <strong>save</strong> when you have finished changing your settings.</p>
         <div>
-            <label for="fbt_shortcutkey">Shortcut key:</label>
+            <label for="fbt_shortcutkey">Shortcut key for plain url:</label>
             <input type="text" maxlength="1" id="fbt_shortcutkey">
+        </div>
+        <div>
+            <label for="fbt_mod_shortcutkey">Shortcut key for modified url:</label>
+            <input type="text" maxlength="1" id="fbt_mod_shortcutkey">
+        </div>
+        <div>
+            <label for="fbt_mod_prefix">Prefix for modified url:</label>
+            <input type="text" id="fbt_mod_prefix">
         </div>
         <div>
             <button id="fbt_submitbutton">Save</button>

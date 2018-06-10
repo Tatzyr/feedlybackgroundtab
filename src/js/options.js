@@ -39,6 +39,22 @@
 		var _defaultShortcutKey = ';';
 
 		/**
+		 * The default mod shortcut key
+		 * @todo maybe this should be a shared constant
+		 * @type {string}
+		 * @private
+		 */
+		var _defaultModShortcutKey = '[';
+
+		/**
+		 * The default mod prefix
+		 * @todo maybe this should be a shared constant
+		 * @type {string}
+		 * @private
+		 */
+		var _defaultModPrefix = 'https://web.archive.org/web/*/';
+
+		/**
 		 * Initializer function: sets hotkeys, etc
 		 */
 		this.init = function() {
@@ -51,11 +67,19 @@
 		 * @private
 		 */
 		var _restoreOptions = function() {
-			chrome.storage.sync.get('shortcutKey', function(settings) {
+			chrome.storage.sync.get(['shortcutKey', 'modShortcutKey', 'modPrefix'], function(settings) {
 				if (!settings.shortcutKey) {
 					settings.shortcutKey = _defaultShortcutKey;
 				}
+				if (!settings.modShortcutKey) {
+					settings.modShortcutKey = _defaultModShortcutKey;
+				}
+				if (!settings.modPrefix) {
+					settings.modPrefix = _defaultModPrefix;
+				}
 				document.querySelector('#fbt_shortcutkey').value = settings.shortcutKey;
+				document.querySelector('#fbt_mod_shortcutkey').value = settings.modShortcutKey;
+				document.querySelector('#fbt_mod_prefix').value = settings.modPrefix;
 			});
 		};
 
@@ -70,6 +94,18 @@
 				return false;
 			}
 
+			var modKey = document.querySelector('#fbt_mod_shortcutkey');
+			if (modKey.value == '') {
+				_updateStatus(_messages.validateFailure, _messageTypes.failure);
+				return false;
+			}
+
+			var modPrefix = document.querySelector('#fbt_mod_prefix');
+			if (modPrefix.value == '') {
+				_updateStatus(_messages.validateFailure, _messageTypes.failure);
+				return false;
+			}
+
 			_save();
 		};
 
@@ -80,7 +116,9 @@
 		 */
 		var _save = function() {
 			var shortcutKey = document.querySelector('#fbt_shortcutkey').value;
-			chrome.storage.sync.set({'shortcutKey': shortcutKey}, function () {
+			var modShortcutKey = document.querySelector('#fbt_mod_shortcutkey').value;
+			var modPrefix = document.querySelector('#fbt_mod_prefix').value;
+			chrome.storage.sync.set({'shortcutKey': shortcutKey, 'modShortcutKey': modShortcutKey, 'modPrefix': modPrefix}, function () {
 				_updateStatus(_messages.success, _messageTypes.success);
 			});
 		};
